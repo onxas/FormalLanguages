@@ -66,7 +66,7 @@ public class Tests {
         String testString = "aBaB";
         Assertions.assertEquals(new Pair<>(true, 4), fsm.maxString(testString, 0));
 
-        fsm.resetMachine()
+        fsm.resetMachine();
         testString = "xxxAvAdxxx";
         Assertions.assertEquals(new Pair<>(true, 4), fsm.maxString(testString, 3));
 
