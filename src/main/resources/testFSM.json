@@ -1,0 +1,28 @@
+{
+  "alphabet": [
+    "a",
+    "b"
+  ],
+  "states": [
+    "q1",
+    "q2",
+    "q3",
+    "q4"
+  ],
+  "startStates": [
+    "q1"
+  ],
+  "finalStates": [
+    "q4"
+  ],
+  "matrix": {
+    "q0": {
+      "a": [
+        "q1"
+      ],
+      "b": [
+        "q2"
+      ]
+    }
+  }
+}
