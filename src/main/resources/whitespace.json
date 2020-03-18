@@ -1,0 +1,28 @@
+{
+  "alphabet": [
+    " "
+  ],
+  "states": [
+    "q0",
+    "q1"
+  ],
+  "startStates": [
+    "q0"
+  ],
+  "finalStates": [
+    "q1"
+  ],
+  "matrix": {
+    "q0": {
+      " ": [
+        "q1"
+      ]
+    },
+    "q1": {
+      " ": [
+        "q1"
+      ]
+    }
+  },
+  "type": "whitespace"
+}

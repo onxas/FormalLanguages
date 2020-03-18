@@ -1,0 +1,37 @@
+{
+  "alphabet": [
+    "e",
+    "n",
+    "d"
+  ],
+  "states": [
+    "q0",
+    "q1",
+    "q2",
+    "q3"
+  ],
+  "startStates": [
+    "q0"
+  ],
+  "finalStates": [
+    "q3"
+  ],
+  "matrix": {
+    "q0": {
+      "e": [
+        "q1"
+      ]
+    },
+    "q1": {
+      "n": [
+        "q2"
+      ]
+    },
+    "q2": {
+      "d": [
+        "q3"
+      ]
+    }
+  },
+  "type": "finish"
+}

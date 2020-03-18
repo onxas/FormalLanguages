@@ -1,4 +1,7 @@
+package json;
+
 import com.google.gson.*;
+import fsm.FinalStateMachine;
 import javafx.util.Pair;
 
 import java.lang.reflect.Type;
@@ -26,6 +29,8 @@ public class FSMDesiarializer implements JsonDeserializer<FinalStateMachine> {
                 json.getAsJsonArray("startStates"), HashSet.class
         );
 
+        String id = context.deserialize(json.get("type"), String.class);
+
         Map<String, Map<String, List<String>>> matrix = context.deserialize(json.getAsJsonObject("matrix"), Map.class);
         Map<Pair<String, String>, Set<String>> transitions = matrix.entrySet().stream()
                 .flatMap(x -> x.getValue().entrySet().stream()
@@ -38,6 +43,7 @@ public class FSMDesiarializer implements JsonDeserializer<FinalStateMachine> {
         fsm.setFinalStates(finalStates);
         fsm.setStartStates(startStates);
         fsm.setTransitions(transitions);
+        fsm.setType(id);
 
         return fsm;
     }

@@ -1,80 +1,52 @@
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import fsm.FinalStateMachine;
+import fsm.FinalStateMachineGroup;
 import javafx.util.Pair;
+import lexer.Lexer;
+import lexer.Token;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.util.*;
 
 public class Tests {
 
-    Gson gson = new GsonBuilder().setPrettyPrinting().enableComplexMapKeySerialization().registerTypeAdapter(FinalStateMachine.class, new FSMDesiarializer()).create();
-    File jsonFSM = new File("D:\\Study\\FormalLang\\src\\main\\resources\\testFSM.json");
-    FinalStateMachine testFSM;
-
-    FinalStateMachine createFromJson(File file) {
-        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-            StringBuilder json = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                json.append(line);
-            }
-            return gson.fromJson(json.toString(), FinalStateMachine.class);
-        } catch (Exception ex) {
-            return null;
-        }
-    }
-
     @Test
     public void TestDeserializationFSM() {
-        FinalStateMachine finalStateMachine = createFromJson(jsonFSM);
+        File jsonFSM = new File("D:\\Study\\FormalLang\\src\\main\\resources\\testFSM.json");
+        FinalStateMachine finalStateMachine = FinalStateMachine.createFromJson(jsonFSM);
     }
 
     @Test
     public void testMaxString() {
-        FinalStateMachine fsm = new FinalStateMachine();
-        Set<String> alphabet = new HashSet<>();
-        Set<String> states = new HashSet<>(Arrays.asList("noChar", "lastLow", "lastUpper", "lastSame"));
-        Set<String> startStates = new HashSet<>(Arrays.asList("noChar"));
-        Set<String> endStates = new HashSet<>(Arrays.asList("lastSame"));
-        Map<Pair<String, String>, Set<String>> transitions = new HashMap<>();
+        File file = new File("D:\\\\Study\\\\FormalLang\\\\src\\\\main\\\\resources\\\\whitespace.json");
+        FinalStateMachine fsm = FinalStateMachine.createFromJson(file);
 
-        for (char i = 'a'; i <= 'z'; i++) {
-            String symbol = "" + i;
-            alphabet.add(symbol);
-            transitions.put(new Pair<>("noChar", symbol), new HashSet<>(Arrays.asList("lastLow")));
-            transitions.put(new Pair<>("lastUpper", symbol), new HashSet<>(Arrays.asList("lastLow")));
-            transitions.put(new Pair<>("lastLow", symbol), new HashSet<>(Arrays.asList("lastSame")));
-        }
-        for (char i = 'A'; i <= 'Z'; i++) {
-            String symbol = "" + i;
-            alphabet.add(symbol);
-            transitions.put(new Pair<>("noChar", symbol), new HashSet<>(Arrays.asList("lastUpper")));
-            transitions.put(new Pair<>("lastLow", symbol), new HashSet<>(Arrays.asList("lastUpper")));
-            transitions.put(new Pair<>("lastUpper", symbol), new HashSet<>(Arrays.asList("lastSame")));
-        }
+        String input = " ";
+        Assertions.assertEquals(new Pair<Boolean, Integer>(true, 1), fsm.maxString(input, 0));
 
-        fsm.setStates(states);
-        fsm.setStartStates(startStates);
-        fsm.setFinalStates(endStates);
-        fsm.setAlphabet(alphabet);
-        fsm.setTransitions(transitions);
+        input = "X X";
+        Assertions.assertEquals(new Pair<Boolean, Integer>(true, 1), fsm.maxString(input, 1));
+        Assertions.assertEquals(new Pair<Boolean, Integer>(false, 0), fsm.maxString(input, 0));
+    }
 
-        String testString = "aBaB";
-        Assertions.assertEquals(new Pair<>(true, 4), fsm.maxString(testString, 0));
+    @Test
+    public void testDesirializeFSMGroup() {
+        File file = new File("D:\\Study\\FormalLang\\src\\main\\resources\\fsmGroup.json");
+        FinalStateMachineGroup fsmGroup = FinalStateMachineGroup.createFromFile(file);
+    }
 
-        fsm.resetMachine();
-        testString = "xxxAvAdxxx";
-        Assertions.assertEquals(new Pair<>(true, 4), fsm.maxString(testString, 3));
+    @Test
+    public void testLexer() {
+        File file = new File("D:\\Study\\FormalLang\\src\\main\\resources\\fsmGroup.json");
+        FinalStateMachineGroup fsmGroup = FinalStateMachineGroup.createFromFile(file);
+        String input = "begin end";
 
-        fsm.resetMachine();
-        Assertions.assertEquals(new Pair<>(true, 1), fsm.maxString(testString, 0));
+        Lexer lexer = new Lexer(fsmGroup);
+        List<Token> tokens = lexer.tokenize(input);
 
-        fsm.resetMachine();
-        testString = "1AbCd";
-        Assertions.assertEquals(new Pair<>(false, 0), fsm.maxString(testString, 0));
+        Assertions.assertEquals("start", tokens.get(0).getType());
+        Assertions.assertEquals("whitespace", tokens.get(1).getType());
+        Assertions.assertEquals("finish", tokens.get(2).getType());
     }
 }
