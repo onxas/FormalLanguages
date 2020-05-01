@@ -47,6 +47,6 @@
       ]
     }
   },
-  "type":"start",
-  "priority": 1
+  "type":"priority",
+  "priority": 2
 }

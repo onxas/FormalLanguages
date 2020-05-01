@@ -2,19 +2,27 @@ package lexer;
 
 import fsm.FinalStateMachineGroup;
 import javafx.util.Pair;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Лексер
+ */
+@AllArgsConstructor
+@Data
 public class Lexer {
 
     private FinalStateMachineGroup fsmGroup;
 
-    public Lexer(FinalStateMachineGroup fsmGroup) {
-        this.fsmGroup = fsmGroup;
-    }
-
-
+    /**
+     * Возвращает список токенов из строки
+     *
+     * @param inputString
+     * @return
+     */
     public List<Token> tokenize(String inputString) {
         List<Token> tokens = new ArrayList<>();
         int pos = 0;

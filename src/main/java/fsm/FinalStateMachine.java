@@ -4,16 +4,19 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import javafx.util.Pair;
 import json.FSMDesiarializer;
+import lombok.Data;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
-
+@Data
+/**
+ * Конечный недетерминированный автомат
+ */
 public class FinalStateMachine {
 
     private Set<String> alphabet;
@@ -22,36 +25,14 @@ public class FinalStateMachine {
     private Set<String> finalStates;
     private Map<Pair<String, String>, Set<String>> transitions;
     private Set<String> currentStates;
-    //type of token, which is recognized by the machine
+    private Long priority;
+    //Тип токена, который распознаёт автомат
     private String type;
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public void setAlphabet(Set<String> alphabet) {
-        this.alphabet = alphabet;
-    }
-
-    public void setStates(Set<String> states) {
-        this.states = states;
-    }
 
     public void setStartStates(Set<String> startStates) {
         this.startStates = startStates;
-        this.currentStates = ((Set) ((HashSet) startStates).clone());
-    }
-
-    public void setFinalStates(Set<String> finalStates) {
-        this.finalStates = finalStates;
-    }
-
-    public void setTransitions(Map<Pair<String, String>, Set<String>> transitions) {
-        this.transitions = transitions;
+        this.currentStates = new HashSet<>(startStates);
     }
 
     public static FinalStateMachine createFromJson(File file) {
@@ -68,12 +49,19 @@ public class FinalStateMachine {
         }
     }
 
-    //return machine in start condition
+    /**
+     * Возвтращает автомат в исходное состояние
+     */
     public void resetMachine() {
         currentStates = startStates;
     }
 
-    //transition by signal
+    /**
+     * Переход по сигналу в следующие состояния
+     *
+     * @param signal
+     * @return
+     */
     private boolean inputSignal(String signal) {
         HashSet<String> newStates = new HashSet<>();
         try {
@@ -87,6 +75,13 @@ public class FinalStateMachine {
         return true;
     }
 
+    /**
+     * Возвращает максимальную подстроку принадлежающую языку, который задаёт автомат
+     *
+     * @param string
+     * @param pos
+     * @return
+     */
     public Pair<Boolean, Integer> maxString(String string, int pos) {
         if (pos >= string.length())
             return new Pair<>(false, 0);
@@ -97,7 +92,7 @@ public class FinalStateMachine {
                 count++;
                 res = true;
                 pos++;
-                //checking for a final state
+                //првоеряем заключительное состояние
                 for (String state : currentStates) {
                     if (finalStates.contains(state)) {
                         resetMachine();
@@ -105,7 +100,7 @@ public class FinalStateMachine {
                     }
                 }
             }
-            //can`t reach final state
+            //не дошли до заключительного состояния
             else {
                 resetMachine();
                 return new Pair<>(false, 0);

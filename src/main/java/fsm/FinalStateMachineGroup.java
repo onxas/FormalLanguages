@@ -4,38 +4,49 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import javafx.util.Pair;
 import json.FSMGroupDesiarializer;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.util.Comparator;
 import java.util.List;
 
+@Data
+@AllArgsConstructor
+/**
+ * Группа автоматов
+ */
 public class FinalStateMachineGroup {
 
     private List<FinalStateMachine> fsmList;
 
-    public FinalStateMachineGroup(List<FinalStateMachine> fsmList) {
-        this.fsmList = fsmList;
-    }
-
-    public List<FinalStateMachine> getFsmList() {
-        return fsmList;
-    }
-
-    public void setFsmList(List<FinalStateMachine> fsmList) {
-        this.fsmList = fsmList;
-    }
-
-    //maxString for all machines in list. Return result and type of token
+    /**
+     * Ищет маскимальную подстроку принадлежащую языку одного из автоматов из группы
+     *
+     * @param input
+     * @param pos
+     * @return
+     */
     public Pair<Pair<Boolean, Integer>, String> maxString(String input, int pos) {
+        fsmList.sort(Comparator.comparing(FinalStateMachine::getPriority));
+        Pair<Pair<Boolean, Integer>, String> result = new Pair<>(new Pair<>(false, 0), null);
         for (FinalStateMachine fsm : fsmList) {
-            Pair<Pair<Boolean, Integer>, String> result = new Pair<>(fsm.maxString(input, pos), fsm.getType());
-            if (result.getKey().getKey()) return result;
+            Pair<Boolean, Integer> maxStringResult = fsm.maxString(input, pos);
+            if (maxStringResult.getKey() && maxStringResult.getValue() >= result.getKey().getValue()) {
+                result = new Pair<>(new Pair<>(true, maxStringResult.getValue()), fsm.getType());
+            }
         }
-        return new Pair<>(new Pair<>(false, 0), null);
+        return result;
     }
 
-    //File - array of path`s of fsm json`s
+    /**
+     * Создаёт группу автомата из файла, который содержит пути к файлам автоматов из группы
+     *
+     * @param file
+     * @return
+     */
     public static FinalStateMachineGroup createFromFile(File file) {
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(FinalStateMachineGroup.class, new FSMGroupDesiarializer()).create();

@@ -24,5 +24,6 @@
       ]
     }
   },
-  "type": "whitespace"
+  "type": "whitespace",
+  "priority": 1
 }

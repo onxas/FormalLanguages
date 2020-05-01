@@ -33,5 +33,6 @@
       ]
     }
   },
-  "type": "finish"
+  "type": "finish",
+  "priority": 1
 }

@@ -11,6 +11,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Дессериализатор автомата
+ */
 public class FSMDesiarializer implements JsonDeserializer<FinalStateMachine> {
     @Override
     public FinalStateMachine deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext context) throws JsonParseException {
@@ -28,6 +31,7 @@ public class FSMDesiarializer implements JsonDeserializer<FinalStateMachine> {
         Set<String> startStates = context.deserialize(
                 json.getAsJsonArray("startStates"), HashSet.class
         );
+        Long priority = context.deserialize(json.get("priority"), Long.class);
 
         String id = context.deserialize(json.get("type"), String.class);
 
@@ -43,6 +47,7 @@ public class FSMDesiarializer implements JsonDeserializer<FinalStateMachine> {
         fsm.setFinalStates(finalStates);
         fsm.setStartStates(startStates);
         fsm.setTransitions(transitions);
+        fsm.setPriority(priority);
         fsm.setType(id);
 
         return fsm;

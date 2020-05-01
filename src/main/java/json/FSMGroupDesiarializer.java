@@ -12,6 +12,9 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Дессериализатор группы автоматов
+ */
 public class FSMGroupDesiarializer implements JsonDeserializer<FinalStateMachineGroup> {
     @Override
     public FinalStateMachineGroup deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext context) throws JsonParseException {
